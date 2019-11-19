@@ -1,1 +1,75 @@
+<!doctype html>
+<html>
+<head>
+	<title>Weather API</title>
+	<meta charset="utf-8"/>
+	<script>
+		function getWeather() {
+			/* Step 1: Make instance of request object...
+			...to make HTTP request after page is loaded*/
+			request = new XMLHttpRequest();
+			console.log("1 - request object created");
+ 
+			// Step 2: Set the URL for the AJAX request to be the JSON file
+ 
+			request.open("GET", "https://api.openbrewerydb.org/breweries?by_city=boston", true);
 
+			console.log("2 - opened request file");
+ 
+			// Step 3: set up event handler/callback
+
+			request.onreadystatechange = function() {
+				console.log("3 - readystatechange event fired.");
+ 
+				if (request.readyState == 4 && request.status == 200) {
+
+					// Step 5: wait for done + success
+
+					result = request.responseText;
+					alert(result)
+					breweries = JSON.parse(result);
+
+					x="List of breweries in Boston: <br> <br>";
+					document.getElementById("data").innerHTML =x;
+					
+					for (var i=0; i<breweries.length; i++) {
+						x+= breweries[i].name + "<br>";
+					}
+					document.getElementById("data").innerHTML =x;
+					
+				}
+				else if (request.readyState == 4 && request.status != 200) {
+
+					document.getElementById("data").innerHTML = "Something is wrong!  Check the logs to see where this went off the rails";
+
+				}
+
+				else if (request.readyState == 3) {
+
+					document.getElementById("data").innerHTML = "Too soon!  Try again";
+
+				}
+
+			}
+		// Step 4: fire off the HTTP request
+			request.send();
+			console.log("4 - Request sent");
+		}
+	</script>
+</head>
+
+
+<body onload="getWeather()">
+
+	<h1>Breweries</h1>
+	<div id="description">Open Brewery DB is a free API for public information on breweries, cideries, brewpubs, and bottleshops. Currently it is focused to the United States. </div> 
+	<br>
+	<div id="citation">I found this API at https://www.openbrewerydb.org/ </div> 
+	<br>
+	<div id="options">I queried using the by_city=boston option in the API request. </div> 
+	<br>
+	<div id="applications">This API would be helpful if you want some beer but you're tired of your usual beer, so you decide to explore some nearby breweries. You can query by_city, by_state, by_type, and by_tag. This will tell you everything you need to know about your brewery options, and will even let you know if the brewery is dog friendly so you can bring along your pup! </div> 
+	<br>
+	<div id="data">Loading...</div>
+</body>
+</html>
